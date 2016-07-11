@@ -15,6 +15,7 @@ This part is a reimplementation of [PokemonHook](https://github.com/rpplusplus/P
 
 ### Bypass Jailbreak Detection
 
-Working in progress...
+This part contains two parts, too.
 
-Now the app doesn't crash, but seems that can't connect to the server.
+* Objective-C method swizzle: prevent app from crashing.
+* C function swizzle: make the app can connect to server.

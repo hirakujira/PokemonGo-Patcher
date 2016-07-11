@@ -1,5 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+#include <stdio.h>
+#include <sys/sysctl.h>
+#include <sys/stat.h>
 #include <objc/runtime.h>
 
 %hook NSFileManager
@@ -35,11 +38,7 @@
 
 %hook UIApplication 
 - (BOOL)canOpenURL:(NSURL *)url {
-    if ([[url absoluteString] isEqualToString:@"cydia://"]) {
-        // NSLog(@"URL Scheme Patched");
-        return NO;
-    }
-    return %orig;
+    return [[url absoluteString] isEqualToString:@"cydia://"] ? NO : %orig;
 }
 %end
 
@@ -76,6 +75,43 @@ static float y = -1;
 %end
 
 
+//Implement printf to print logs...
+int printf(const char * __restrict format, ...)
+{ 
+    va_list args;
+    va_start(args,format);    
+    NSLogv([NSString stringWithUTF8String:format], args) ;    
+    va_end(args);
+    return 1;
+}
+
+static FILE * (*orig_fopen) ( const char * filename, const char * mode );
+FILE * new_fopen ( const char * filename, const char * mode ) {
+    if (strcmp(filename, "/bin/bash") == 0) {
+        return NULL;
+    }
+    return orig_fopen(filename, mode);
+}
+
+static int (*orig_stat)(const char * file_name, struct stat *buf);
+int new_stat(const char * file_name, struct stat *buf) {
+    if (strcmp(file_name, "/Library/Frameworks/CydiaSubstrate.framework") == 0) {  
+        return -1;
+    }
+    return orig_stat(file_name, buf);
+}
+
+static int (*orig_lstat)(const char *path, struct stat *buf);
+int new_lstat(const char *path, struct stat *buf) {
+    if (strcmp(path, "/Applications") == 0) {
+        return -1;
+    }
+    return orig_lstat(path, buf);
+}
+
 %ctor {
     %init;
+    MSHookFunction((void *)fopen, (void *)new_fopen, (void **)&orig_fopen);
+    MSHookFunction((void *)stat, (void *)new_stat, (void **)&orig_stat);
+    MSHookFunction((void *)lstat, (void *)new_lstat, (void **)&orig_lstat);
 }
