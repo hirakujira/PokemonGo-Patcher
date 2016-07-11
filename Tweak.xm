@@ -28,6 +28,7 @@
         [path isEqualToString:@"/usr/libexec/ssh-keysign"]) {
         return NO;
     }
+    //Lacking of slashes? Yes, that's what they 'detect' in the app. lol
     return %orig;
 }
 %end

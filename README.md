@@ -15,4 +15,6 @@ This part is a reimplementation of [PokemonHook](https://github.com/rpplusplus/P
 
 ### Bypass Jailbreak Detection
 
-Working on progress...
+Working in progress...
+
+Now the app doesn't crash, but seems that can't connect to the server.
