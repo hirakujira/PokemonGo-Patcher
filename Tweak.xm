@@ -72,18 +72,6 @@ static float y = -1;
     // NSLog(@"latitude %f, longitude %f", position.latitude-x, position.longitude-y);
     return CLLocationCoordinate2DMake(position.latitude-x, position.longitude-y);
 }
-
-+ (void) load {
-    %orig;
-
-    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_x"]) {
-        x = [[[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_x"] floatValue];
-    };
-    
-    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_y"]) {
-        y = [[[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_y"] floatValue];
-    };
-}
 %end
 
 
