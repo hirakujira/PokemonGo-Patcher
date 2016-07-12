@@ -1,4 +1,4 @@
-## PokemonGo Patcher
+# PokemonGo Patcher
 
 
 ### About 
@@ -17,5 +17,6 @@ This part is a reimplementation of [PokemonHook](https://github.com/rpplusplus/P
 
 This part contains two parts, too.
 
-* Objective-C method swizzle: prevent app from crashing.
-* C function swizzle: make the app can connect to server.
+* Objective-C method swizzling: prevent app from crashing.
+* C function swizzling: make the app can connect to server.
+
