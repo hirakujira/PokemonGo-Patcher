@@ -50,8 +50,7 @@ static float y = -1;
 
 - (CLLocationCoordinate2D) coordinate {
     CLLocationCoordinate2D position = %orig;
-
-    //Make sure that the game would load last location value.
+    
     if ([[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_x"]) {
         x = [[[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_x"] floatValue];
     };
@@ -61,16 +60,17 @@ static float y = -1;
     };
     
     if (x == -1 && y == -1) {
-        if (position.latitude > 21.8 && position.latitude < 25.3 &&
-            position.longitude > 119 && position.longitude < 122) {
-            x = -14.230294;
-            y = 198.039224;
-        }
-        else {
+        // if (position.latitude > 21.8 && position.latitude < 25.3 &&
+        //     position.longitude > 119 && position.longitude < 122) {
+        //     x = -14.230294;
+        //     y = 198.039224;
+        // }
+        // else {
             x = position.latitude - 37.7883923;
             y = position.longitude - (-122.4076413);
-        }
+        // }
     }
+
     [[NSUserDefaults standardUserDefaults] setValue:@(x) forKey:@"_fake_x"];
     [[NSUserDefaults standardUserDefaults] setValue:@(y) forKey:@"_fake_y"];
     [[NSUserDefaults standardUserDefaults] synchronize];
