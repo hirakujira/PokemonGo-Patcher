@@ -52,7 +52,7 @@ static float y = -1;
     CLLocationCoordinate2D position = %orig;
     if (x == -1 && y == -1) {
         if (position.latitude > 21.8 && position.latitude < 25.3 &&
-            position.longitude > 119 && osition.longitude < 122) {
+            position.longitude > 119 && position.longitude < 122) {
             x = -14.230294;
             y = 198.039224;
         }
