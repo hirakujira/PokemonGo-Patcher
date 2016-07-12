@@ -51,14 +51,6 @@ static float y = -1;
 - (CLLocationCoordinate2D) coordinate {
     CLLocationCoordinate2D position = %orig;
     
-    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_x"]) {
-        x = [[[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_x"] floatValue];
-    };
-    
-    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_y"]) {
-        y = [[[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_y"] floatValue];
-    };
-    
     if (x == -1 && y == -1) {
         // if (position.latitude > 21.8 && position.latitude < 25.3 &&
         //     position.longitude > 119 && position.longitude < 122) {
@@ -69,11 +61,12 @@ static float y = -1;
             x = position.latitude - 37.7883923;
             y = position.longitude - (-122.4076413);
         // }
-    }
 
-    [[NSUserDefaults standardUserDefaults] setValue:@(x) forKey:@"_fake_x"];
-    [[NSUserDefaults standardUserDefaults] setValue:@(y) forKey:@"_fake_y"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+
+        [[NSUserDefaults standardUserDefaults] setValue:@(x) forKey:@"_fake_x"];
+        [[NSUserDefaults standardUserDefaults] setValue:@(y) forKey:@"_fake_y"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 
     return CLLocationCoordinate2DMake(position.latitude-x, position.longitude-y);
 }
@@ -115,6 +108,15 @@ int new_lstat(const char *path, struct stat *buf) {
 }
 
 %ctor {
+    
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_x"]) {
+        x = [[[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_x"] floatValue];
+    };
+    
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_y"]) {
+        y = [[[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_y"] floatValue];
+    };
+
     %init;
     MSHookFunction((void *)fopen, (void *)new_fopen, (void **)&orig_fopen);
     MSHookFunction((void *)stat, (void *)new_stat, (void **)&orig_stat);
