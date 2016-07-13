@@ -37,7 +37,7 @@
         NSMutableArray *specifiers = [NSMutableArray array];
 
         PSSpecifier *gSetFakeLocation = [PSSpecifier groupSpecifierWithName:@"Fake Location"];
-        [gSetFakeLocation setProperty:@"Default: x = 37.7883923, y = -122.4076413" forKey:@"footerText"];
+        [gSetFakeLocation setProperty:@"Set your location and it will be mapped to Union Square." forKey:@"footerText"];
         [gSetFakeLocation setProperty:@(YES) forKey:@"isStaticText"];
         [specifiers addObject:gSetFakeLocation];
 

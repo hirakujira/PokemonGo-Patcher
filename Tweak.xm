@@ -55,13 +55,17 @@ static NSMutableDictionary* plistDict = [[NSMutableDictionary alloc] initWithCon
     if (x == -1 && y == -1) {
         float init_x = plistDict[@"_init_x"] ? [plistDict[@"_init_x"] floatValue] : 37.7883923;
         float init_y = plistDict[@"_init_y"] ? [plistDict[@"_init_y"] floatValue] : -122.4076413;
-        x = position.latitude - init_x;
-        y = position.longitude - init_y;
+        x = position.latitude + (37.7883923 - init_x);
+        y = position.longitude + (-122.4076413 - init_y);
+        x = x > 90 ? 90 : x;
+        x = x < -90 ? -90 : x;
+        y = y > 180 ? 180 : y;
+        y = y < -180 ? -180 : y;
         plistDict[@"_offset_x"] = [NSNumber numberWithFloat:x];
         plistDict[@"_offset_y"] = [NSNumber numberWithFloat:y];
         [plistDict writeToFile:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist" atomically:NO];
     }
-    return CLLocationCoordinate2DMake(position.latitude-x, position.longitude-y);
+    return CLLocationCoordinate2DMake(x, y);
 }
 %end
 
