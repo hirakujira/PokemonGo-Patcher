@@ -41,5 +41,6 @@ void setUserDefaultForKey(NSString *key, id value) {
     [defaults setObject:value forKey:key];
     [defaults removeObjectForKey:@"_offset_x"];
     [defaults removeObjectForKey:@"_offset_y"];
+    [defaults setObject:@YES forKey:@"apply"];
     [defaults writeToFile:SettingPath atomically:YES];
 }

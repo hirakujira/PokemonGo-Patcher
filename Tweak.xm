@@ -47,7 +47,8 @@
 
 static float x = -1;
 static float y = -1;
-static NSMutableDictionary* plistDict = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/User/Library/Preferences/tw.hiraku.pokemongo.plist"];
+
+static NSMutableDictionary* plistDict = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist"];
 
 - (CLLocationCoordinate2D) coordinate {
     CLLocationCoordinate2D position = %orig;
@@ -55,15 +56,19 @@ static NSMutableDictionary* plistDict = [[NSMutableDictionary alloc] initWithCon
     if (x == -1 && y == -1) {
         float init_x = plistDict[@"_init_x"] ? [plistDict[@"_init_x"] floatValue] : 37.7883923;
         float init_y = plistDict[@"_init_y"] ? [plistDict[@"_init_y"] floatValue] : -122.4076413;
-        init_x = init_x > 90 ? 90 : init_x;
-        init_x = init_x < -90 ? -90 : init_x;
-        init_y = init_y > 180 ? 180 : init_y;
-        init_y = init_y < -180 ? -180 : init_y;
-        x = position.latitude - init_x;
-        y = position.longitude - init_y;
-        plistDict[@"_offset_x"] = [NSNumber numberWithFloat:x];
-        plistDict[@"_offset_y"] = [NSNumber numberWithFloat:y];
-        [plistDict writeToFile:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist" atomically:NO];
+        BOOL applyNewLocation = plistDict[@"apply"] ? [plistDict[@"apply"] boolValue] : YES;
+        if (applyNewLocation == YES) {
+            init_x = init_x > 90 ? 90 : init_x;
+            init_x = init_x < -90 ? -90 : init_x;
+            init_y = init_y > 180 ? 180 : init_y;
+            init_y = init_y < -180 ? -180 : init_y;
+            x = position.latitude - init_x;
+            y = position.longitude - init_y;
+            plistDict[@"_offset_x"] = [NSNumber numberWithFloat:x];
+            plistDict[@"_offset_y"] = [NSNumber numberWithFloat:y];
+            plistDict[@"apply"] = @NO;
+            [plistDict writeToFile:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist" atomically:NO];
+        }
     }
     return CLLocationCoordinate2DMake(position.latitude-x, position.longitude-y);
 }
@@ -110,14 +115,16 @@ int new_lstat(const char *path, struct stat *buf) {
         NSDictionary *plistDict = @{@"_init_x":@37.7883923,@"_init_y":@-122.4076413};
         [plistDict writeToFile:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist" atomically:NO];
     }
-    
-    if (plistDict[@"_offset_x"]) {
-        x = [plistDict[@"_offset_x"] floatValue];
-    };
-    
-    if (plistDict[@"_offset_y"]) {
-        x = [plistDict[@"_offset_y"] floatValue];
-    };
+    else {
+        plistDict = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist"];
+        if (plistDict[@"_offset_x"]) {
+            x = [plistDict[@"_offset_x"] floatValue];
+        };
+
+        if (plistDict[@"_offset_y"]) {
+            y = [plistDict[@"_offset_y"] floatValue];
+        };
+    }
 
     %init;
     MSHookFunction((void *)fopen, (void *)new_fopen, (void **)&orig_fopen);
