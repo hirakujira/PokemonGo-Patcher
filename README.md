@@ -10,8 +10,9 @@ This tweak contains two parts:
 
 ### Fake Location
 
-This part is a reimplementation of [PokemonHook](https://github.com/rpplusplus/PokemonHook) tweak in theos logos.
+This part is based on [PokemonHook](https://github.com/rpplusplus/PokemonHook) tweak and reimplement in theos logos.
 
+DEBIAN package is available on my Cydia repo: [https://cydia.hiraku.tw](https://cydia.hiraku.tw)
 
 ### Bypass Jailbreak Detection
 
