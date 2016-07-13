@@ -1,0 +1,10 @@
+{
+	entry = {
+		bundle = "PokemonGo_Patcher";
+		cell = PSLinkCell;
+		detail = "PokemonGo_PatcherController";
+		icon = "icon.png";
+		isController = 1;
+		label = "PokemonGo_Patcher";
+	};
+}
