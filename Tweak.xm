@@ -47,27 +47,20 @@
 
 static float x = -1;
 static float y = -1;
+static NSMutableDictionary* plistDict = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/User/Library/Preferences/tw.hiraku.pokemongo.plist"];
 
 - (CLLocationCoordinate2D) coordinate {
     CLLocationCoordinate2D position = %orig;
-    
+
     if (x == -1 && y == -1) {
-        // if (position.latitude > 21.8 && position.latitude < 25.3 &&
-        //     position.longitude > 119 && position.longitude < 122) {
-        //     x = -14.230294;
-        //     y = 198.039224;
-        // }
-        // else {
-            x = position.latitude - 37.7883923;
-            y = position.longitude - (-122.4076413);
-        // }
-
-
-        [[NSUserDefaults standardUserDefaults] setValue:@(x) forKey:@"_fake_x"];
-        [[NSUserDefaults standardUserDefaults] setValue:@(y) forKey:@"_fake_y"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        float init_x = plistDict[@"_init_x"] ? [plistDict[@"_init_x"] floatValue] : 37.7883923;
+        float init_y = plistDict[@"_init_y"] ? [plistDict[@"_init_y"] floatValue] : -122.4076413;
+        x = position.latitude - init_x;
+        y = position.longitude - init_y;
+        plistDict[@"_offset_x"] = [NSNumber numberWithFloat:x];
+        plistDict[@"_offset_y"] = [NSNumber numberWithFloat:y];
+        [plistDict writeToFile:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist" atomically:NO];
     }
-
     return CLLocationCoordinate2DMake(position.latitude-x, position.longitude-y);
 }
 %end
@@ -108,13 +101,18 @@ int new_lstat(const char *path, struct stat *buf) {
 }
 
 %ctor {
+
+    if(![[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist"]) { 
+        NSDictionary *plistDict = @{@"_init_x":@37.7883923,@"_init_y":@-122.4076413};
+        [plistDict writeToFile:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist" atomically:NO];
+    }
     
-    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_x"]) {
-        x = [[[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_x"] floatValue];
+    if (plistDict[@"_offset_x"]) {
+        x = [plistDict[@"_offset_x"] floatValue];
     };
     
-    if ([[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_y"]) {
-        y = [[[NSUserDefaults standardUserDefaults] valueForKey:@"_fake_y"] floatValue];
+    if (plistDict[@"_offset_y"]) {
+        x = [plistDict[@"_offset_y"] floatValue];
     };
 
     %init;
