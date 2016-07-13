@@ -22,16 +22,7 @@ internal-stage ::
 	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
 	$(ECHO_NOTHING)cp entry.plist $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/PokemonGo_Patcher.plist$(ECHO_END)
 	rsync $(RSYNC_SETTINGS) .theos/_/Library/PreferenceBundles/PokemonGo_Patcher.bundle/* root@$(IP_ADDRESS):/Library/PreferenceBundles/PokemonGo_Patcher.bundle/
-	
+
 sync: stage
-	rsync -z _/Library/PreferenceLoader/Preferences/PokemonGo_Patcher.plist root@$(IP_ADDRESS):/Library/PreferenceLoader/Preferences/PokemonGo_Patcher.plist
-	ssh root@$(IP_ADDRESS) open com.apple.Preferences
-	
-synclocal: stage
 	rsync -e "ssh -p 2222" -z .theos/_/Library/PreferenceLoader/Preferences/PokemonGo_Patcher.plist root@$(IP_ADDRESS):/Library/PreferenceLoader/Preferences/PokemonGo_Patcher.plist
 	ssh root@$(IP_ADDRESS) $(SSH_PORT) killall Preferences
-	
-localization ::
-	rsync -z Resources/zh_TW.lproj/* root@$(IP_ADDRESS):/Library/PreferenceBundles/PokemonGo_Patcher.bundle/zh_TW.lproj/
-	rsync -z Resources/en.lproj/* root@$(IP_ADDRESS):/Library/PreferenceBundles/PokemonGo_Patcher.bundle/en.lproj/
-	ssh root@$(IP_ADDRESS) killall Preferences
