@@ -55,6 +55,10 @@ static NSMutableDictionary* plistDict = [[NSMutableDictionary alloc] initWithCon
     if (x == -1 && y == -1) {
         float init_x = plistDict[@"_init_x"] ? [plistDict[@"_init_x"] floatValue] : 37.7883923;
         float init_y = plistDict[@"_init_y"] ? [plistDict[@"_init_y"] floatValue] : -122.4076413;
+        init_x = init_x > 90 ? 90 : init_x;
+        init_x = init_x < -90 ? -90 : init_x;
+        init_y = init_y > 180 ? 180 : init_y;
+        init_y = init_y < -180 ? -180 : init_y;
         x = position.latitude - init_x;
         y = position.longitude - init_y;
         plistDict[@"_offset_x"] = [NSNumber numberWithFloat:x];
