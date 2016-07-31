@@ -47,21 +47,19 @@
 
 static float x = -1;
 static float y = -1;
+static float init_x = 0;
+static float init_y = 0;
 
 static NSMutableDictionary* plistDict = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist"];
 
 - (CLLocationCoordinate2D) coordinate {
     CLLocationCoordinate2D position = %orig;
-
+    if ((init_x == 0 && init_y == 0) || init_x > 90 || init_x < -90 || init_y > 180 || init_y < -180) {
+        return position;
+    }
     if (x == -1 && y == -1) {
-        float init_x = plistDict[@"_init_x"] ? [plistDict[@"_init_x"] floatValue] : 37.7883923;
-        float init_y = plistDict[@"_init_y"] ? [plistDict[@"_init_y"] floatValue] : -122.4076413;
         BOOL applyNewLocation = plistDict[@"apply"] ? [plistDict[@"apply"] boolValue] : YES;
         if (applyNewLocation == YES) {
-            init_x = init_x > 90 ? 90 : init_x;
-            init_x = init_x < -90 ? -90 : init_x;
-            init_y = init_y > 180 ? 180 : init_y;
-            init_y = init_y < -180 ? -180 : init_y;
             x = position.latitude - init_x;
             y = position.longitude - init_y;
             plistDict[@"_offset_x"] = [NSNumber numberWithFloat:x];
@@ -124,6 +122,8 @@ int new_lstat(const char *path, struct stat *buf) {
         if (plistDict[@"_offset_y"]) {
             y = [plistDict[@"_offset_y"] floatValue];
         };
+        init_x = plistDict[@"_init_x"] ? [plistDict[@"_init_x"] floatValue] : 37.7883923;
+        init_y = plistDict[@"_init_y"] ? [plistDict[@"_init_y"] floatValue] : -122.4076413;
     }
 
     %init;

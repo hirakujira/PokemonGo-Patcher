@@ -39,8 +39,8 @@ void setUserDefaultForKey(NSString *key, id value) {
     NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
     [defaults addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:SettingPath]];
     [defaults setObject:value forKey:key];
-    [defaults removeObjectForKey:@"_offset_x"];
-    [defaults removeObjectForKey:@"_offset_y"];
-    [defaults setObject:@YES forKey:@"apply"];
+	[defaults removeObjectForKey:@"_offset_x"];
+	[defaults removeObjectForKey:@"_offset_y"];
+	[defaults setObject:@YES forKey:@"apply"];
     [defaults writeToFile:SettingPath atomically:YES];
 }
