@@ -3,10 +3,11 @@
 
 ### About 
 
-This tweak contains two parts: 
+This tweak contains three parts: 
 
 * Fake location
 * Bypass jailbreak detection
+* Force to launch in Japanese
 
 ### Fake Location
 
@@ -20,4 +21,3 @@ This part contains two parts, too.
 
 * Objective-C method swizzling: prevent app from crashing.
 * C function swizzling: make the app can connect to server.
-

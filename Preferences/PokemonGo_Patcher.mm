@@ -49,6 +49,15 @@
         [inity setIdentifier:@"_init_y"];
         [specifiers addObject:inity];
 
+        PSSpecifier *gUseJapanese = [PSSpecifier groupSpecifierWithName:@""];
+        [gUseJapanese setProperty:@"For some users, they are more faimilar with Japanese although they can't read any Japanese. lol" forKey:@"footerText"];
+        [gUseJapanese setProperty:@(YES) forKey:@"isStaticText"];
+        [specifiers addObject:gUseJapanese];
+
+        PSSpecifier *useJapaneseSwitchCell = [PSSpecifier preferenceSpecifierNamed:@"Use Japanese" target:self set:@selector(setValue:forSpecifier:) get:@selector(getValueForSpecifier:) detail:Nil cell:[PSTableCell cellTypeFromString:@"PSSwitchCell"] edit:Nil];
+        [useJapaneseSwitchCell setIdentifier:@"setJapanese"];
+        [specifiers addObject:useJapaneseSwitchCell];
+
         [_specifiers release];
         _specifiers = nil;
         _specifiers = [[NSArray alloc]initWithArray:specifiers];

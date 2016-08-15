@@ -12,7 +12,7 @@ PokemonGo_Patcher_CFLAGS = -I$(SYSROOT)/usr/include/libxml2
 PokemonGo_Patcher_LDFLAGS = -lxml2
 PokemonGo_Patcher_LDFLAG += -Wl,-segalign,0x4000
 export ARCHS = armv7 armv7s arm64
-export TARGET = iphone:clang::5.0
+export TARGET = iphone:clang::8.0
 
 include theos/makefiles/common.mk
 include $(THEOS_MAKE_PATH)/bundle.mk

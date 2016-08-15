@@ -42,6 +42,25 @@
 }
 %end
 
+%hook NSUserDefaults
+
+static BOOL useJapanese = NO;
+
++ (NSUserDefaults *)standardUserDefaults {
+    NSUserDefaults* defaults = %orig;
+
+    if (useJapanese == YES) {
+        [defaults setObject:@[@"ja"] forKey:@"AppleLanguages"];
+    }
+    else {
+        NSArray *languages = [defaults objectForKey:@"AppleLanguages"];
+        if ([[languages firstObject] isEqualToString:@"ja"] && languages.count == 1) {
+            [defaults removeObjectForKey:@"AppleLanguages"];
+        }
+    }
+    return defaults;
+}
+%end
 
 %hook CLLocation
 
@@ -110,7 +129,7 @@ int new_lstat(const char *path, struct stat *buf) {
 %ctor {
 
     if(![[NSFileManager defaultManager] fileExistsAtPath:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist"]) { 
-        NSDictionary *plistDict = @{@"_init_x":@37.7883923,@"_init_y":@-122.4076413};
+        NSDictionary *plistDict = @{@"_init_x":@0,@"_init_y":@0};
         [plistDict writeToFile:@"/var/mobile/Library/Preferences/tw.hiraku.pokemongo.plist" atomically:NO];
     }
     else {
@@ -122,8 +141,12 @@ int new_lstat(const char *path, struct stat *buf) {
         if (plistDict[@"_offset_y"]) {
             y = [plistDict[@"_offset_y"] floatValue];
         };
-        init_x = plistDict[@"_init_x"] ? [plistDict[@"_init_x"] floatValue] : 37.7883923;
-        init_y = plistDict[@"_init_y"] ? [plistDict[@"_init_y"] floatValue] : -122.4076413;
+        init_x = plistDict[@"_init_x"] ? [plistDict[@"_init_x"] floatValue] : 0;
+        init_y = plistDict[@"_init_y"] ? [plistDict[@"_init_y"] floatValue] : 0;
+
+        if (plistDict[@"setJapanese"]) {
+            useJapanese = [plistDict[@"setJapanese"] boolValue];
+        };
     }
 
     %init;
