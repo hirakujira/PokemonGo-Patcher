@@ -40,7 +40,7 @@ void setUserDefaultForKey(NSString *key, id value) {
     [defaults addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:SettingPath]];
     [defaults setObject:value forKey:key];
 
-	if (![key isEqualToString:@"setJapanese"]) {
+	if (![key isEqualToString:@"setJapanese"] && ![key isEqualToString:@"showOrigImageInPokePP"]) {
 		[defaults removeObjectForKey:@"_offset_x"];
 		[defaults removeObjectForKey:@"_offset_y"];
 		[defaults setObject:@YES forKey:@"apply"];

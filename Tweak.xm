@@ -91,6 +91,13 @@ static NSMutableDictionary* plistDict = [[NSMutableDictionary alloc] initWithCon
 }
 %end
 
+%group POKEPPHook
+%hook UIImage
++ (UIImage *)add_imageNamed:(NSString *)name tintColor:(UIColor *)color style:(int)style {
+    return [UIImage imageNamed:[NSString stringWithFormat:@"orig_%@",name]];
+}
+%end
+%end
 
 //Implement printf to print logs...
 int printf(const char * __restrict format, ...)
@@ -147,9 +154,14 @@ int new_lstat(const char *path, struct stat *buf) {
         if (plistDict[@"setJapanese"]) {
             useJapanese = [plistDict[@"setJapanese"] boolValue];
         };
+
+        if ([plistDict[@"showOrigImageInPokePP"] boolValue] == YES && [[NSFileManager defaultManager] fileExistsAtPath:@"/var/ua_tweak_resources/PokeGoPP/APResources.bundle/orig_1.png"]) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{ %init(POKEPPHook) });
+        }
     }
 
     %init;
+    
     MSHookFunction((void *)fopen, (void *)new_fopen, (void **)&orig_fopen);
     MSHookFunction((void *)stat, (void *)new_stat, (void **)&orig_stat);
     MSHookFunction((void *)lstat, (void *)new_lstat, (void **)&orig_lstat);

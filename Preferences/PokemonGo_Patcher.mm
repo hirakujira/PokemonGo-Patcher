@@ -58,6 +58,17 @@
         [useJapaneseSwitchCell setIdentifier:@"setJapanese"];
         [specifiers addObject:useJapaneseSwitchCell];
 
+        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/var/ua_tweak_resources/PokeGoPP/APResources.bundle/orig_1.png"]) {
+            PSSpecifier *gShowOrigImageInPokePP = [PSSpecifier groupSpecifierWithName:@""];
+            [gShowOrigImageInPokePP setProperty:@"Don't show tinted shadow pokemon images in Poke Go ++. (This hack doesn't work in map view.)" forKey:@"footerText"];
+            [gShowOrigImageInPokePP setProperty:@(YES) forKey:@"isStaticText"];
+            [specifiers addObject:gShowOrigImageInPokePP];
+
+            PSSpecifier *showOrigInPokePPSwitchCell = [PSSpecifier preferenceSpecifierNamed:@"No Tinted Images " target:self set:@selector(setValue:forSpecifier:) get:@selector(getValueForSpecifier:) detail:Nil cell:[PSTableCell cellTypeFromString:@"PSSwitchCell"] edit:Nil];
+            [showOrigInPokePPSwitchCell setIdentifier:@"showOrigImageInPokePP"];
+            [specifiers addObject:showOrigInPokePPSwitchCell];
+        }
+
         [_specifiers release];
         _specifiers = nil;
         _specifiers = [[NSArray alloc]initWithArray:specifiers];
